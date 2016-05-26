@@ -8,10 +8,13 @@ wget curl git
 
 # Configure apache
 COPY ./config/apache2.conf /etc/apache2/apache2.conf
+RUN chmod 600 /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
 # Configure MySQL
 COPY ./config/my.cnf /etc/mysql/my.cnf
+RUN chmod 600 /etc/mysql/my.cnf
+RUN service mysql start && mysql -u root --execute="GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '';"
 EXPOSE 3306
 
 # Install composer
