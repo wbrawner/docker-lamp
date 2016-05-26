@@ -43,6 +43,9 @@ if (!$conn) {
                 overflow-x: scroll;
                 padding: 5px 10px;
             }
+            pre::-webkit-scrollbar {
+              display: none;
+            }
             .info {
                 border: 1px solid #FFDE73;
                 border-top: 3px solid #FFDE73;
@@ -149,7 +152,20 @@ fe0d4632c300        phpmyadmin/phpmyadmin   "/run.sh"                About an ho
             <h2>DISCLAIMER:</h2>
 
             <p>This Docker machine should under NO circumstances, be used in a production environment. This is solely intended for local development, and has numerous security concerns that would need to be addressed prior to being a feasible production candidate. You have been warned.</p>
-            <p>MySQL Connection Status: <span style="color: <?php echo $color; ?>;"><?php echo $mysqlStatus; ?></span></p>
+            <h3>MySQL Connection Status: <span style="color: <?php echo $color; ?>;"><?php echo $mysqlStatus; ?></span></h3>
+            <h2>Cheat Sheet</h2>
+            <p>composer:</p>
+            <pre>docker exec -it dockerlamp_app_1 composer</pre>
+            <p>interactive bash shell:</p>
+            <pre>docker exec -it dockerlamp_app_1 /bin/bash</pre>
+            <p>mage-dbdump.sh:</p>
+            <pre>docker exec -it dockerlamp_app_1 /var/www/html/mustijamirri/mage-dbdump.sh</pre>
+            <p>magerun:</p>
+            <pre>docker exec -it dockerlamp_app_1 magerun</pre>
+            <p>mysql:</p>
+            <pre>docker exec -it dockerlamp_app_1 mysql</pre>
+            <p>modman:</p>
+            <pre>docker exec -it dockerlamp_app_1 modman</pre>
         </div>
     </body>
 </html>
