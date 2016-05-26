@@ -8,14 +8,18 @@ wget curl git
 
 # Configure apache
 COPY ./config/apache2.conf /etc/apache2/apache2.conf
-RUN chmod 600 /etc/apache2/apache2.conf
+RUN chmod 644 /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
 # Configure MySQL
 COPY ./config/my.cnf /etc/mysql/my.cnf
-RUN chmod 600 /etc/mysql/my.cnf
+RUN chmod 644 /etc/mysql/my.cnf
 RUN service mysql start && mysql -u root --execute="GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '';"
 EXPOSE 3306
+
+# Configure PHPMyAdmin
+COPY ./config/config.inc.php /etc/phpmyadmin/config.inc.php
+RUN chmod 644 /etc/phpmyadmin/config.inc.php
 
 # Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
@@ -45,4 +49,7 @@ ENV APACHE_PID_FILE=/var/run/apache2/apache2.pid
 ENV APACHE_RUN_USER=www-data
 ENV APACHE_RUN_GROUP=www-data
 ENV APACHE_LOG_DIR=/var/log/apache2
+
+# Fire up the image!
+WORKDIR /var/www/html
 ENTRYPOINT service mysql start; apache2 -DFOREGROUND
