@@ -6,3 +6,4 @@ app:
   volumes:
     - /var/lib/mysql
     - ./public_html:/var/www/html
+    - /etc/localtime:/etc/localtime
