@@ -52,4 +52,4 @@ ENV APACHE_LOG_DIR=/var/log/apache2
 
 # Fire up the image!
 WORKDIR /var/www/html
-ENTRYPOINT service mysql start; apache2 -DFOREGROUND
+ENTRYPOINT service cron start; service mysql start; apache2 -DFOREGROUND
