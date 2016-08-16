@@ -4,8 +4,8 @@ FROM debian:jessie
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y apache2 libapache2-mod-php5 \
-mysql-server php5 php5-mysql php5-mcrypt php5-curl php5-gd phpmyadmin vim \
-wget curl git cron
+lsb-release php5 php5-mysql php5-mcrypt php5-curl php5-gd php5-xsl php5-intl \
+phpmyadmin vim wget curl git cron
 
 # Configure apache
 COPY ./config/apache2.conf /etc/apache2/apache2.conf
@@ -13,10 +13,17 @@ RUN chmod 644 /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
 # Configure MySQL
-COPY ./config/my.cnf /etc/mysql/my.cnf
-RUN chmod 644 /etc/mysql/my.cnf
-RUN service mysql start && mysql -u root --execute="GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '';"
+RUN wget "http://dev.mysql.com/get/mysql-apt-config_0.7.3-1_all.deb" 
+RUN dpkg -i mysql-apt-config_0.7.3-1_all.deb && apt-get update && apt-get \
+install -y mysql-server
+#COPY ./config/my.cnf /etc/mysql/my.cnf
+#RUN chmod 644 /etc/mysql/my.cnf
+#RUN service mysql restart && mysql -u root --execute="CREATE USER admin IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY '';"
 EXPOSE 3306
+
+# Configure PHP
+COPY ./config/php.ini /etc/php5/apache2/php.ini
+RUN chmod 644 /etc/php5/apache2/php.ini
 
 # Configure PHPMyAdmin
 COPY ./config/config.inc.php /etc/phpmyadmin/config.inc.php
@@ -26,18 +33,6 @@ RUN chmod 644 /etc/phpmyadmin/config.inc.php
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
 php composer-setup.php && \
 php -r "unlink('composer-setup.php');"
-
-# Install magerun
-RUN wget https://files.magerun.net/n98-magerun.phar && \
-    mv n98-magerun.phar /usr/bin/ && \
-    echo 'alias magerun="php -f /usr/bin/n98-magerun.phar --"' >> /root/.bashrc
-
-# Install Accolade Magerun Tools
-RUN mkdir -p /usr/local/share/n98-magerun/modules && \
-git clone https://github.com/Accolades/MagerunTools.git /usr/local/share/n98-magerun/modules/MagerunTools
-
-# Install Magento Mess Detector
-RUN git clone https://github.com/AOEpeople/mpmd.git /usr/local/share/n98-magerun/modules/mpmd
 
 # Install modman
 RUN wget -q --no-check-certificate -O - https://raw.github.com/colinmollenhour/modman/master/modman-installer | bash && \

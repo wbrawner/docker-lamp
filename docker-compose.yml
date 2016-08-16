@@ -1,8 +1,8 @@
 app:
   build: .
   ports:
-    - 80:80
-    - 3306:3306
+    - 8000:80
+    - 8001:3306
   volumes:
     - /var/lib/mysql
     - ./public_html:/var/www/html
